@@ -38,6 +38,10 @@ Without `--output` the file is named:
 
 If the target file already exists the tool asks `File '…' exists. Overwrite? [y/N]` before generating anything. Answering anything other than `y`/`yes` cancels (exit code 1). When stdin is not a terminal the answer is always no; use `--force` in scripts.
 
+## Public holidays
+
+Dutch public holidays are fetched from the open Nager.Date API for every year on the calendar (see [public-events.md](public-events.md)). Without network access the PDF is still written, without holidays, and a `warning: could not fetch public holidays for <year>: …` line is printed to stderr.
+
 ## Exit codes
 
 | Code | Meaning |

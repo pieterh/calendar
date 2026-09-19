@@ -12,7 +12,7 @@ src/Calendar/                 the CLI (assembly name: calendar)
   Program.cs                  System.CommandLine definition, entry point
   Cli/                        CalendarApp (orchestration), MonthArgumentParser, OverwritePrompt
   Model/                      YearMonth, MonthGrid (week rows, ISO weeks), CalendarEvent
-  Events/                     IPublicEventProvider, DutchPublicEvents
+  Events/                     IPublicEventProvider, NagerDateClient (API fetch), PublicEventList
   Rendering/                  CalendarTheme (all sizes/colours), CalendarDocument (QuestPDF)
   Output/                     OutputPathResolver (file names), PdfOpener (default viewer)
 tests/Calendar.Tests/         xUnit tests for parsing, grid layout, file names and events

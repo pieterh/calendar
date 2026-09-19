@@ -1,6 +1,6 @@
 # calendar
 
-A small .NET 10 command-line tool that generates a printable PDF calendar: A4 landscape, one month per page, ISO week numbers, shaded weekends and Dutch public events.
+A small .NET 10 command-line tool that generates a printable PDF calendar: A4 landscape, one month per page, ISO week numbers, shaded weekends and Dutch public holidays (fetched from the open [Nager.Date](https://date.nager.at) API; without network access the calendar is generated without holidays and a warning is printed).
 
 ```sh
 calendar                      # current month → ./calendar-202609.pdf
@@ -29,5 +29,5 @@ dotnet publish src/Calendar -c Release -r osx-arm64 --self-contained false -p:Pu
 
 - [Usage](docs/usage.md) — arguments, options, exit codes
 - [Page layout](docs/layout.md) — what the page looks like and why
-- [Public events](docs/public-events.md) — current events and the planned follow-up
+- [Public events](docs/public-events.md) — where the holidays come from, offline behaviour, planned follow-up
 - [Development](docs/development.md) — build, test, publish, project structure
