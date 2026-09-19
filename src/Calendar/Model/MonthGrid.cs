@@ -7,6 +7,14 @@ public sealed record DayCell(DateOnly? Date, IReadOnlyList<CalendarEvent> Events
 {
     public bool IsInMonth => Date is not null;
     public int? DayNumber => Date?.Day;
+
+    public bool IsPublicHoliday => Events.Any(e => e.Kind == EventKind.PublicHoliday);
+
+    /// <summary>The flag instruction for the day, or <see cref="FlagInstruction.None"/>.</summary>
+    public FlagInstruction Flag => Events.Select(e => e.Flag).FirstOrDefault(f => f != FlagInstruction.None);
+
+    /// <summary>Event names to print; a day known from two sources (e.g. Koningsdag) is named once.</summary>
+    public IReadOnlyList<string> Names => Events.Select(e => e.Name).Distinct(StringComparer.Ordinal).ToList();
 }
 
 /// <summary>A week row: seven cells, Monday first, plus the ISO-8601 week number.</summary>

@@ -27,6 +27,12 @@ public static class CalendarTheme
     public const float CellPadding = 4;
     public const float CellBorderWidth = 0.5f;
 
+    // Flag-day marker: a 3:2 tricolour top-right in the cell, with an orange strip above it on wimpel days.
+    public const float FlagWidth = 12;
+    public const float FlagHeight = 8;
+    public const float PennantHeight = 2;
+    public const float FlagBorderWidth = 0.3f; // outlines the white band on a white cell
+
     public static readonly Color HeaderTop = Color.FromHex("#2a8fdb");
     public static readonly Color HeaderBottom = Color.FromHex("#0c5ea9");
     public static readonly Color Title = Colors.White;
@@ -38,4 +44,8 @@ public static class CalendarTheme
     public static readonly Color EventBackground = Color.FromHex("#cce4f7");
     public static readonly Color Text = Color.FromHex("#222222");
     public static readonly Color MutedText = Color.FromHex("#666666");
+    public static readonly Color FlagRed = Color.FromHex("#AE1C28");
+    public static readonly Color FlagWhite = Colors.White;
+    public static readonly Color FlagBlue = Color.FromHex("#21468B");
+    public static readonly Color FlagOrange = Color.FromHex("#FF7F00");
 }

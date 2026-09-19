@@ -127,7 +127,7 @@ public sealed class CalendarDocument(
 
     private static void ComposeDayCell(IContainer container, DayCell cell, bool isWeekend)
     {
-        var background = cell.Events.Count > 0 ? CalendarTheme.EventBackground
+        var background = cell.IsPublicHoliday ? CalendarTheme.EventBackground
             : isWeekend ? CalendarTheme.WeekendBackground
             : CalendarTheme.WeekdayBackground;
 
@@ -142,16 +142,53 @@ public sealed class CalendarDocument(
                     .Text(cell.DayNumber?.ToString(CultureInfo.InvariantCulture) ?? string.Empty)
                     .FontSize(CalendarTheme.DayNumberFontSize);
 
-                if (cell.Events.Count > 0)
+                if (cell.Flag != FlagInstruction.None)
+                {
+                    layers.Layer()
+                        .AlignTop()
+                        .AlignRight()
+                        .Element(c => ComposeFlag(c, cell.Flag));
+                }
+
+                if (cell.Names.Count > 0)
                 {
                     layers.Layer()
                         .AlignBottom()
                         .AlignRight()
-                        .Text(string.Join(", ", cell.Events.Select(e => e.Name)))
+                        .Text(string.Join(", ", cell.Names))
+                        .AlignRight() // keeps a wrapped name flush right
                         .FontSize(CalendarTheme.EventFontSize)
                         .Italic();
                 }
             });
+    }
+
+    /// <summary>A small tricolour; an orange pennant strip above it, or drawn one flag-height lower for half-mast.</summary>
+    private static void ComposeFlag(IContainer container, FlagInstruction flag)
+    {
+        container.Width(CalendarTheme.FlagWidth).Column(column =>
+        {
+            if (flag == FlagInstruction.HalfMast)
+            {
+                column.Item().Height(CalendarTheme.FlagHeight);
+            }
+
+            if (flag == FlagInstruction.WithPennant)
+            {
+                column.Item().Height(CalendarTheme.PennantHeight).Background(CalendarTheme.FlagOrange);
+            }
+
+            column.Item()
+                .Border(CalendarTheme.FlagBorderWidth)
+                .BorderColor(CalendarTheme.CellBorder)
+                .Column(bands =>
+                {
+                    var bandHeight = CalendarTheme.FlagHeight / 3;
+                    bands.Item().Height(bandHeight).Background(CalendarTheme.FlagRed);
+                    bands.Item().Height(bandHeight).Background(CalendarTheme.FlagWhite);
+                    bands.Item().Height(bandHeight).Background(CalendarTheme.FlagBlue);
+                });
+        });
     }
 
     private string MonthTitle(YearMonth month) =>

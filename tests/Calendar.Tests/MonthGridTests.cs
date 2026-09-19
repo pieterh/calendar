@@ -1,3 +1,4 @@
+using Calendar.Events;
 using Calendar.Model;
 
 namespace Calendar.Tests;
@@ -69,5 +70,41 @@ public class MonthGridTests
         Assert.Equal(15, cell.DayNumber);
         Assert.Equal([prinsjesdag], cell.Events);
         Assert.Empty(grid.Rows[2].Days[0].Events);
+    }
+
+    [Fact]
+    public void SameDayFromTwoSources_NamedOnce_FilledAndFlagged()
+    {
+        var fromApi = new CalendarEvent(new DateOnly(2026, 4, 27), "Koningsdag");
+        var grid = new MonthGrid(new YearMonth(2026, 4), [fromApi, .. DutchFlagDays.ForYear(2026)]);
+
+        var cell = grid.Rows[4].Days[0]; // Monday 27 April
+        Assert.Equal(27, cell.DayNumber);
+        Assert.Equal(2, cell.Events.Count);
+        Assert.Equal(["Koningsdag"], cell.Names);
+        Assert.True(cell.IsPublicHoliday);
+        Assert.Equal(FlagInstruction.WithPennant, cell.Flag);
+    }
+
+    [Fact]
+    public void FlagDayOnly_IsNotAPublicHoliday()
+    {
+        var grid = new MonthGrid(new YearMonth(2026, 5), DutchFlagDays.ForYear(2026));
+
+        var cell = grid.Rows[1].Days[0]; // Monday 4 May
+        Assert.Equal(4, cell.DayNumber);
+        Assert.False(cell.IsPublicHoliday);
+        Assert.Equal(FlagInstruction.HalfMast, cell.Flag);
+        Assert.Equal(["Dodenherdenking"], cell.Names);
+    }
+
+    [Fact]
+    public void PublicHolidayOnly_HasNoFlag()
+    {
+        var grid = new MonthGrid(new YearMonth(2026, 1), [new CalendarEvent(new DateOnly(2026, 1, 1), "Nieuwjaarsdag")]);
+
+        var cell = grid.Rows[0].Days[3]; // Thursday 1 January
+        Assert.True(cell.IsPublicHoliday);
+        Assert.Equal(FlagInstruction.None, cell.Flag);
     }
 }
