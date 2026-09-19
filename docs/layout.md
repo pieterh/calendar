@@ -25,7 +25,7 @@ The design follows the Kalender365 monthly sheet, minus the branding: no corner 
 
 ## Events
 
-- A day with a public holiday is filled `#cce4f7` (light blue) instead of white/grey. Flag days do not change the fill.
+- A day with a public holiday is filled `#cce4f7` (light blue) instead of white/grey. Flag days and observances (Sinterklaas, Dierendag, …) do not change the fill.
 - Event names are printed italic, 8 pt, right-aligned, bottom-right in the cell. Several events on one day are joined with `, `; a day that is both a public holiday and a flag day under the same name (Koningsdag, Bevrijdingsdag) is named once.
 
 ## Flag days
@@ -33,5 +33,10 @@ The design follows the Kalender365 monthly sheet, minus the branding: no corner 
 - A flag day gets a 12 × 8 pt tricolour (`#AE1C28`, white, `#21468B`, with a 0.3 pt `#dcdcdc` outline) in the top-right corner of the cell.
 - On days with an orange wimpel (Koningsdag and the royal birthdays) a 2 pt `#FF7F00` strip sits directly above the flag.
 - On 4 May (Dodenherdenking) the flag is drawn one flag-height (8 pt) lower: halfstok.
+
+## Clock change
+
+- The switch to summer time (last Sunday of March) and to winter time (last Sunday of October) gets a 12 × 12 pt clock icon in the top-right corner: a clock face with the hands at 12 and 3 and a curved arrow over it — clockwise for summer time, mirrored (counter-clockwise) for winter time. It is drawn as inline SVG in the text colour with a 0.9 pt stroke, so no icon font is needed.
+- The icon shares the corner with the flag: if a day ever had both, the flag comes first and the icon sits 2 pt to its right.
 
 All values live in `src/Calendar/Rendering/CalendarTheme.cs`.

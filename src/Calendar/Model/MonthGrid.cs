@@ -13,6 +13,9 @@ public sealed record DayCell(DateOnly? Date, IReadOnlyList<CalendarEvent> Events
     /// <summary>The flag instruction for the day, or <see cref="FlagInstruction.None"/>.</summary>
     public FlagInstruction Flag => Events.Select(e => e.Flag).FirstOrDefault(f => f != FlagInstruction.None);
 
+    /// <summary>The icon for the day, or <see cref="EventIcon.None"/>.</summary>
+    public EventIcon Icon => Events.Select(e => e.Icon).FirstOrDefault(i => i != EventIcon.None);
+
     /// <summary>Event names to print; a day known from two sources (e.g. Koningsdag) is named once.</summary>
     public IReadOnlyList<string> Names => Events.Select(e => e.Name).Distinct(StringComparer.Ordinal).ToList();
 }

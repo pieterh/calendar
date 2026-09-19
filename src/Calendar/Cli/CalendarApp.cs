@@ -84,8 +84,8 @@ public sealed class CalendarApp(TextWriter stdout, TextWriter stderr, TextReader
     }
 
     /// <summary>
-    /// Collects the events for every year that is on the calendar: the static flag days plus the public
-    /// holidays fetched from the API. A year whose fetch fails (offline, API down, unexpected response) is
+    /// Collects the events for every year that is on the calendar: the static flag days and observances plus
+    /// the public holidays fetched from the API. A year whose fetch fails (offline, API down, unexpected response) is
     /// reported on stderr and simply has no holidays.
     /// </summary>
     private PublicEventList LoadPublicEvents(IReadOnlyList<YearMonth> months)
@@ -98,6 +98,7 @@ public sealed class CalendarApp(TextWriter stdout, TextWriter stderr, TextReader
         foreach (var year in months.Select(m => m.Year).Distinct())
         {
             events.AddRange(DutchFlagDays.ForYear(year));
+            events.AddRange(DutchObservances.ForYear(year));
             try
             {
                 events.AddRange(client.GetHolidays(year));

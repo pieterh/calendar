@@ -1,6 +1,6 @@
 # Public events
 
-Events are supplied by `IPublicEventProvider` (`src/Calendar/Events/`). The renderer asks the provider for the events of each month and highlights the matching cells (see [layout.md](layout.md)). There are two sources: public holidays fetched from Nager.Date, and the Dutch flag days from a static table. `CalendarApp.LoadPublicEvents` merges both per year into one `PublicEventList`.
+Events are supplied by `IPublicEventProvider` (`src/Calendar/Events/`). The renderer asks the provider for the events of each month and highlights the matching cells (see [layout.md](layout.md)). There are three sources: public holidays fetched from Nager.Date, the Dutch flag days from a static table, and a second static table of well-known observances (Sinterklaas, the clock changes, …). `CalendarApp.LoadPublicEvents` merges them per year into one `PublicEventList`.
 
 ## Source: Nager.Date
 
@@ -57,10 +57,28 @@ The alternative date applies only when the date falls on a Sunday or a generally
 
 Each flag day is a `CalendarEvent` with `Kind = FlagDay` and a `FlagInstruction` (`Full`, `WithPennant`, `HalfMast`). Koningsdag and Bevrijdingsdag are also returned by Nager.Date; both events are kept, and `DayCell.Names` prints the name once. Such a day is drawn with the holiday fill *and* the flag marker.
 
+## Source: observances
+
+Well-known days that are neither public holidays nor flag days, so neither of the sources above has them. `DutchObservances` holds them as a static table (`DutchObservances.ForYear(year)`), like the flag days. Dodenherdenking is not in this table: it is already a flag day (halfstok).
+
+| Date | Occasion | Marker |
+|---|---|---|
+| 6 Jan | Driekoningen | |
+| last Sunday of March | Zomertijd | clock, arrow clockwise |
+| 4 Oct | Dierendag | |
+| last Sunday of October | Wintertijd | clock, arrow counter-clockwise |
+| 11 Nov | Sint-Maarten | |
+| 5 Dec | Sinterklaas | |
+| 31 Dec | Oudejaarsdag | |
+
+These days never move, whatever weekday they fall on. The clock changes follow the EU rule in force since 1996 (Directive 2000/84/EC: last Sunday of March and of October, 01:00 UTC) and are computed locally with `DateRules.LastWeekdayOfMonth`; should the EU abolish the switch, the two rows need to go.
+
+Each observance is a `CalendarEvent` with `Kind = Observance`: the name is printed like any other event, but the day gets no holiday fill and no flag. The two clock changes additionally carry an `EventIcon` (`ClockForward` / `ClockBack`) that the renderer draws as a small clock in the flag slot. A clock change can coincide with a holiday (28 March 2027 is Eerste Paasdag); the cell then has the fill, the icon and both names.
+
 ## Follow-up
 
 Possible next steps, without changing the renderer:
 
 1. **Custom events** from a config file (e.g. `~/.config/calendar/events.toml` or a `--events <file>` option), merged with the public ones through a composite provider.
 2. Optional `--no-events` flag and a way to select a country (`NagerDateClient.CountryCode` is currently fixed to `NL`).
-3. Non-holiday observances: Moederdag, Vaderdag, Sinterklaas, begin/end of daylight saving time.
+3. More observances: Moederdag (second Sunday of May), Vaderdag (third Sunday of June).

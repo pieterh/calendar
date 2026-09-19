@@ -1,6 +1,6 @@
 # calendar
 
-A small .NET 10 command-line tool that generates a printable PDF calendar: A4 landscape, one month per page, ISO week numbers, shaded weekends and Dutch public holidays (fetched from the open [Nager.Date](https://date.nager.at) API; without network access the calendar is generated without holidays and a warning is printed).
+A small .NET 10 command-line tool that generates a printable PDF calendar: A4 landscape, one month per page, ISO week numbers, shaded weekends, Dutch public holidays (fetched from the open [Nager.Date](https://date.nager.at) API; without network access the calendar is generated without holidays and a warning is printed), the official flag days and well-known observances such as Sinterklaas and the clock changes.
 
 ```sh
 calendar                      # current month → ./calendar-202609.pdf

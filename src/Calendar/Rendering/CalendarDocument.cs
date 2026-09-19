@@ -142,12 +142,25 @@ public sealed class CalendarDocument(
                     .Text(cell.DayNumber?.ToString(CultureInfo.InvariantCulture) ?? string.Empty)
                     .FontSize(CalendarTheme.DayNumberFontSize);
 
-                if (cell.Flag != FlagInstruction.None)
+                if (cell.Flag != FlagInstruction.None || cell.Icon != EventIcon.None)
                 {
                     layers.Layer()
                         .AlignTop()
                         .AlignRight()
-                        .Element(c => ComposeFlag(c, cell.Flag));
+                        .Row(row =>
+                        {
+                            if (cell.Flag != FlagInstruction.None)
+                            {
+                                row.AutoItem().Element(c => ComposeFlag(c, cell.Flag));
+                            }
+
+                            if (cell.Icon != EventIcon.None)
+                            {
+                                row.AutoItem()
+                                    .PaddingLeft(cell.Flag != FlagInstruction.None ? CalendarTheme.MarkerSpacing : 0)
+                                    .Element(c => ComposeClockIcon(c, cell.Icon));
+                            }
+                        });
                 }
 
                 if (cell.Names.Count > 0)
@@ -189,6 +202,36 @@ public sealed class CalendarDocument(
                     bands.Item().Height(bandHeight).Background(CalendarTheme.FlagBlue);
                 });
         });
+    }
+
+    /// <summary>
+    /// A clock face (hands at 12 and 3) with a curved arrow over its top-right: clockwise for the switch to summer
+    /// time, mirrored (counter-clockwise, over the top-left) for winter time. Inline SVG so no glyph is needed.
+    /// </summary>
+    private static void ComposeClockIcon(IContainer container, EventIcon icon)
+    {
+        const float viewBox = 16;
+        var stroke = (CalendarTheme.ClockIconStrokeWidth * viewBox / CalendarTheme.ClockIconSize)
+            .ToString(CultureInfo.InvariantCulture);
+        var mirror = icon == EventIcon.ClockBack ? $" transform=\"matrix(-1 0 0 1 {viewBox} 0)\"" : string.Empty;
+
+        var svg = $"""
+            <svg xmlns="http://www.w3.org/2000/svg" width="{viewBox}" height="{viewBox}" viewBox="0 0 {viewBox} {viewBox}">
+              <g fill="none" stroke="{CalendarTheme.Text}" stroke-width="{stroke}" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="9" r="4.2"/>
+                <path d="M8 9 V6.2 M8 9 H10.4"/>
+                <g{mirror}>
+                  <path d="M8 2.9 A6.1 6.1 0 0 1 14.1 9"/>
+                  <path d="M12.7 7.4 L14.1 9 L15.5 7.4"/>
+                </g>
+              </g>
+            </svg>
+            """;
+
+        container
+            .Width(CalendarTheme.ClockIconSize)
+            .Height(CalendarTheme.ClockIconSize)
+            .Svg(svg);
     }
 
     private string MonthTitle(YearMonth month) =>

@@ -107,4 +107,31 @@ public class MonthGridTests
         Assert.True(cell.IsPublicHoliday);
         Assert.Equal(FlagInstruction.None, cell.Flag);
     }
+
+    [Fact]
+    public void ObservanceOnly_IsNotAPublicHoliday_HasNoFlagOrIcon()
+    {
+        var grid = new MonthGrid(new YearMonth(2026, 12), DutchObservances.ForYear(2026));
+
+        var cell = grid.Rows[0].Days[5]; // Saturday 5 December
+        Assert.Equal(5, cell.DayNumber);
+        Assert.False(cell.IsPublicHoliday);
+        Assert.Equal(FlagInstruction.None, cell.Flag);
+        Assert.Equal(EventIcon.None, cell.Icon);
+        Assert.Equal(["Sinterklaas"], cell.Names);
+    }
+
+    [Fact]
+    public void ClockChangeOnAHoliday_FilledAndIconed_BothNamed()
+    {
+        // 28 March 2027 is Eerste Paasdag and the switch to summer time.
+        var easter = new CalendarEvent(new DateOnly(2027, 3, 28), "Eerste Paasdag");
+        var grid = new MonthGrid(new YearMonth(2027, 3), [easter, .. DutchObservances.ForYear(2027)]);
+
+        var cell = grid.Rows[3].Days[6]; // Sunday 28 March
+        Assert.Equal(28, cell.DayNumber);
+        Assert.True(cell.IsPublicHoliday);
+        Assert.Equal(EventIcon.ClockForward, cell.Icon);
+        Assert.Equal(["Eerste Paasdag", "Zomertijd"], cell.Names);
+    }
 }

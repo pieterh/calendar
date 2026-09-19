@@ -33,6 +33,11 @@ public static class CalendarTheme
     public const float PennantHeight = 2;
     public const float FlagBorderWidth = 0.3f; // outlines the white band on a white cell
 
+    // Clock-change marker: a clock face with a curved arrow, drawn in the flag slot (right of the flag if both).
+    public const float ClockIconSize = 12;
+    public const float ClockIconStrokeWidth = 0.9f;
+    public const float MarkerSpacing = 2;
+
     public static readonly Color HeaderTop = Color.FromHex("#2a8fdb");
     public static readonly Color HeaderBottom = Color.FromHex("#0c5ea9");
     public static readonly Color Title = Colors.White;
