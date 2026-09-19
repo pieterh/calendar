@@ -1,0 +1,16 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.idea/
+*.swp
+TestResults/
+*.binlog
+
+## macOS
+.DS_Store
+
+## Generated calendars in the repo root
+/*.pdf
